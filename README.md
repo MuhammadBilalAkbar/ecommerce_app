@@ -10,6 +10,6 @@ features state management using the Provider package, offline support via Flutte
 storing previously fetched products and cart data, and seamless navigation between pages. I
 implemented additional features like authentication using Firebase with rememberMe boolean, a search
 bar for filtering products, and animations for a polished user experience. Meaningful user
-experience, such as loading spinners and snackBar messages messages. The app follows a scalable
-architecture, with clean code, efficient API integration, and offline-first functionality for
-improved performance.
+experience, such as loading spinners and snackBar messages messages. I also implemented FCM
+notifications. The app follows a scalable architecture, with clean code, efficient API integration,
+and offline-first functionality for improved performance.
