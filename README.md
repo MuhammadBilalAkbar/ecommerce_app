@@ -13,3 +13,6 @@ bar for filtering products, and animations for a polished user experience. Meani
 experience, such as loading spinners and snackBar messages messages. I also implemented FCM
 notifications. The app follows a scalable architecture, with clean code, efficient API integration,
 and offline-first functionality for improved performance.
+
+Here is FCM screenshot:
+![notifications.png](notifications.png)
