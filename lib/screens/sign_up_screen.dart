@@ -59,59 +59,69 @@ class SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProviders>(context);
 
-    return Scaffold(
-      body: Form(
-        key: formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 15),
-              FilledTextField(
-                controller: emailController,
-                labelText: 'Enter your email',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter email';
-                  } else if (!value.contains('@')) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      // onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+        body: Form(
+          key: formKey,
+          child: Container(
+            margin: const EdgeInsets.only(top: 24, left: 16, right: 16, bottom: 16),
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Column(
+                children: [
+                  const SizedBox(height: 15),
+                  FilledTextField(
+                    controller: emailController,
+                    labelText: 'Enter your email',
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter email';
+                      } else if (!value.contains('@')) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  FilledTextField(
+                    controller: passwordController,
+                    labelText: 'Enter your password',
+                    obscureText: true,
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter password';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  FilledTextField(
+                    controller: confirmPasswordController,
+                    labelText: 'Confirm your password',
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  if (authProvider.isLoading)
+                    const CircularProgressIndicator()
+                  else
+                    ElevatedButton(
+                      onPressed: () => _signUp(authProvider),
+                      child: const Text('Sign Up'),
+                    ),
+                ],
               ),
-              const SizedBox(height: 15),
-              FilledTextField(
-                controller: passwordController,
-                labelText: 'Enter your password',
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter password';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15),
-              FilledTextField(
-                controller: confirmPasswordController,
-                labelText: 'Confirm your password',
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              if (authProvider.isLoading)
-                const CircularProgressIndicator()
-              else
-                ElevatedButton(
-                  onPressed: () => _signUp(authProvider),
-                  child: const Text('Sign Up'),
-                ),
-            ],
+            ),
           ),
         ),
       ),

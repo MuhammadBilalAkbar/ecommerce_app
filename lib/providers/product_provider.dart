@@ -9,8 +9,11 @@ class ProductProvider with ChangeNotifier {
   bool _isOffline = false;
   bool isLoading = false;
   Product? _currentProduct;
+
   List<Product> get products => _products;
+
   bool get isOffline => _isOffline;
+
   Product? get currentProduct => _currentProduct;
 
   Future<void> fetchProducts() async {
@@ -20,19 +23,20 @@ class ProductProvider with ChangeNotifier {
       await _cacheProducts(_products);
     } catch (error) {
       _isOffline = true;
-      _products = await _getCachedProducts();
+      _products = await _getCachedProductsList();
     }
     notifyListeners();
   }
 
-
   Future<void> _cacheProducts(List<Product> products) async {
     final prefs = await SharedPreferences.getInstance();
-    final productListJson = jsonEncode(products.map((p) => p.toJson()).toList());
+    final productListJson = jsonEncode(
+      products.map((p) => p.toJson()).toList(),
+    );
     prefs.setString('cached_products', productListJson);
   }
 
-  Future<List<Product>> _getCachedProducts() async {
+  Future<List<Product>> _getCachedProductsList() async {
     final prefs = await SharedPreferences.getInstance();
     final cachedProducts = prefs.getString('cached_products');
     if (cachedProducts != null) {

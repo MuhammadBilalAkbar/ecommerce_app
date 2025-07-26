@@ -53,6 +53,7 @@ class FilledTextField extends StatelessWidget {
     required this.labelText,
     this.obscureText = false,
     required this.validator,
+    this.textInputAction = TextInputAction.done,
     this.onVisibilityToggle,
   });
 
@@ -61,6 +62,7 @@ class FilledTextField extends StatelessWidget {
   final bool obscureText;
   final String? Function(String?) validator;
   final void Function()? onVisibilityToggle;
+  final TextInputAction? textInputAction;
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +71,13 @@ class FilledTextField extends StatelessWidget {
       obscureText: obscureText,
       autofocus: false,
       style: const TextStyle(fontSize: 24, color: Colors.black),
+      textInputAction: textInputAction,
       decoration: InputDecoration(
         labelText: labelText,
         fillColor: Colors.grey.shade100,
         filled: true,
         hintText: labelText,
+        // onTapOutside: (event) {},
         labelStyle: const TextStyle(fontSize: 24, color: Color(0xff4c505b)),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
