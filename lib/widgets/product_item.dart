@@ -40,7 +40,7 @@ class ProductItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Hero(
-                tag: product.image,
+                tag: 'image_${product.id}',
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CachedNetworkImage(
@@ -67,15 +67,18 @@ class ProductItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      product.title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
+                    Hero(
+                      tag: 'title_${product.id}',
+                      child: Text(
+                        product.title,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 4),
                     Hero(
-                      tag: product.price,
+                      tag: 'price_${product.id}',
                       child: Text(
                         '\$${product.price.toStringAsFixed(2)}',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(

@@ -26,22 +26,20 @@ class ProductDetailScreen extends StatelessWidget {
     final productProvider = Provider.of<ProductProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Product Details'),
-      ),
+      appBar: AppBar(title: const Text('Product Details')),
       body: Column(
         children: [
           Hero(
-            tag: initialImageUrl,
+            // tag: initialImageUrl,
+            tag: 'image_$productId',
             child: CachedNetworkImage(
               key: UniqueKey(),
               cacheManager: ProductDetailScreen.flutterCacheManager,
               imageUrl: initialImageUrl,
               height: 300,
               fit: BoxFit.cover,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(),
-              ),
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
@@ -65,6 +63,17 @@ class ProductDetailScreen extends StatelessWidget {
                       final product = snapshot.data!;
                       return ListView(
                         children: [
+                          Hero(
+                            tag: 'title_${product.id}',
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                product.title,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -73,10 +82,8 @@ class ProductDetailScreen extends StatelessWidget {
                             ),
                           ),
                           Hero(
-                            tag: product.price,
-                            child: Center(
-                              child: Text('\$${product.price}'),
-                            ),
+                            tag: 'price_${product.id}',
+                            child: Center(child: Text('\$${product.price}')),
                           ),
                           ElevatedButton(
                             onPressed: () {
@@ -85,8 +92,10 @@ class ProductDetailScreen extends StatelessWidget {
                                 const SnackBar(
                                   content: Row(
                                     children: [
-                                      Icon(Icons.shopping_cart,
-                                          color: Colors.white),
+                                      Icon(
+                                        Icons.shopping_cart,
+                                        color: Colors.white,
+                                      ),
                                       SizedBox(width: 8),
                                       Text('Added to cart!'),
                                     ],
