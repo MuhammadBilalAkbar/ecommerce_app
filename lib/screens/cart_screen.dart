@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
@@ -20,37 +21,13 @@ class _CartScreenState extends State<CartScreen> {
     Provider.of<CartProvider>(context, listen: false).initializeCart();
   }
 
-  void _removeCartItem(BuildContext context, int index) {
-    final cart = Provider.of<CartProvider>(context, listen: false);
-    final removedItem = cart.items.values.toList()[index];
-
-    cart.removeItem(removedItem.product.id);
-    _listKey.currentState?.removeItem(
-      index,
-          (context, animation) => SlideTransition(
-        position: animation.drive(
-          Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-              .chain(CurveTween(curve: Curves.easeInOut)),
-        ),
-        child: ListTile(
-          leading: Image.network(removedItem.product.image, width: 50),
-          title: Text(removedItem.product.title),
-          subtitle: Text('\$${removedItem.product.price.toString()}'),
-        ),
-      ),
-      duration: const Duration(milliseconds: 300),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     double height = MediaQuery.sizeOf(context).height;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Cart'),
-      ),
+      appBar: AppBar(title: const Text('Your Cart')),
       body: Column(
         children: [
           Expanded(
@@ -67,8 +44,14 @@ class _CartScreenState extends State<CartScreen> {
                     ).chain(CurveTween(curve: Curves.easeInOut)),
                   ),
                   child: ListTile(
-                    leading: Image.network(cartItem.product.image, width: 50),
-
+                    // leading: Image.network(cartItem.product.image, width: 50),
+                    leading: CachedNetworkImage(
+                      imageUrl: cartItem.product.image,
+                      width: 50,
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                     title: Text(cartItem.product.title),
                     subtitle: Text('\$${cartItem.product.price.toString()}'),
                     trailing: Row(
@@ -77,15 +60,19 @@ class _CartScreenState extends State<CartScreen> {
                         DropdownButton<int>(
                           value: cartItem.quantity,
                           items: List.generate(10, (index) => index + 1)
-                              .map((quantity) => DropdownMenuItem(
-                            value: quantity,
-                            child: Text(quantity.toString()),
-                          ))
+                              .map(
+                                (quantity) => DropdownMenuItem(
+                                  value: quantity,
+                                  child: Text(quantity.toString()),
+                                ),
+                              )
                               .toList(),
                           onChanged: (newQuantity) {
                             if (newQuantity != null) {
                               cart.updateItemQuantity(
-                                  cartItem.product.id, newQuantity);
+                                cartItem.product.id,
+                                newQuantity,
+                              );
                             }
                           },
                         ),
@@ -128,9 +115,7 @@ class _CartScreenState extends State<CartScreen> {
                   ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(
-                      const SnackBar(
-                        content: Text('Your cart is empty!'),
-                      ),
+                      const SnackBar(content: Text('Your cart is empty!')),
                     );
                 }
               },

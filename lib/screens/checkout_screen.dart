@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/connectivity_notifier.dart';
@@ -16,9 +17,7 @@ class CheckoutScreen extends StatelessWidget {
 
     return ConnectivityNotifier(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Checkout'),
-        ),
+        appBar: AppBar(title: const Text('Checkout')),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -35,7 +34,14 @@ class CheckoutScreen extends StatelessWidget {
                   itemBuilder: (ctx, i) {
                     final cartItem = cart.items.values.toList()[i];
                     return ListTile(
-                      leading: Image.network(cartItem.product.image, width: 50),
+                      // leading: Image.network(cartItem.product.image, width: 50),
+                      leading: CachedNetworkImage(
+                        imageUrl: cartItem.product.image,
+                        width: 50,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
                       title: Text(cartItem.product.title),
                       subtitle: Text('\$${cartItem.product.price.toString()}'),
                       trailing: Row(
@@ -44,15 +50,19 @@ class CheckoutScreen extends StatelessWidget {
                           DropdownButton<int>(
                             value: cartItem.quantity,
                             items: List.generate(10, (index) => index + 1)
-                                .map((quantity) => DropdownMenuItem(
-                              value: quantity,
-                              child: Text(quantity.toString()),
-                            ))
+                                .map(
+                                  (quantity) => DropdownMenuItem(
+                                    value: quantity,
+                                    child: Text(quantity.toString()),
+                                  ),
+                                )
                                 .toList(),
                             onChanged: (newQuantity) {
                               if (newQuantity != null) {
                                 cart.updateItemQuantity(
-                                    cartItem.product.id, newQuantity);
+                                  cartItem.product.id,
+                                  newQuantity,
+                                );
                               }
                             },
                           ),
@@ -89,9 +99,7 @@ class CheckoutScreen extends StatelessWidget {
                       ScaffoldMessenger.of(context)
                         ..removeCurrentSnackBar()
                         ..showSnackBar(
-                          const SnackBar(
-                            content: Text('Your cart is empty!'),
-                          ),
+                          const SnackBar(content: Text('Your cart is empty!')),
                         );
                       return;
                     }
@@ -100,9 +108,7 @@ class CheckoutScreen extends StatelessWidget {
                       ScaffoldMessenger.of(context)
                         ..removeCurrentSnackBar()
                         ..showSnackBar(
-                          const SnackBar(
-                            content: Text('You are offline!'),
-                          ),
+                          const SnackBar(content: Text('You are offline!')),
                         );
                       return;
                     }
